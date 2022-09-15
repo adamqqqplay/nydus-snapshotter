@@ -18,9 +18,10 @@ import (
 )
 
 const (
-	backendTypeLocalfs  = "localfs"
-	backendTypeOss      = "oss"
-	backendTypeRegistry = "registry"
+	backendTypeLocaldisk = "localdisk"
+	backendTypeLocalfs   = "localfs"
+	backendTypeOss       = "oss"
+	backendTypeRegistry  = "registry"
 )
 
 type FSPrefetch struct {
@@ -61,6 +62,9 @@ type DaemonConfig struct {
 }
 
 type BackendConfig struct {
+	// Localdisk backend configs
+	DevicePath string `json:"device_path,omitempty"`
+
 	// Localfs backend configs
 	BlobFile     string `json:"blob_file,omitempty"`
 	Dir          string `json:"dir,omitempty"`
@@ -173,7 +177,8 @@ func NewDaemonConfig(fsDriver string, cfg DaemonConfig, imageID, snapshotID stri
 		}
 		backendConfig.Host = registryHost
 		backendConfig.Repo = image.Repo
-	// Localfs and OSS backends don't need any update, just use the provided config in template
+	// Localdisk, Localfs and OSS backends don't need any update, just use the provided config in template
+	case backendTypeLocaldisk:
 	case backendTypeLocalfs:
 	case backendTypeOss:
 	default:

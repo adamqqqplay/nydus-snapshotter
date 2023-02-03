@@ -80,17 +80,17 @@ systemctl restart containerd
 Or you can start nydus-snapshotter manually.
 
 ```bash
-# `--nydusd` specifies the path to nydusd binary. If `nydusd` and `nydus-image` are installed, `--nydusd` and `--nydus-image`can be omitted.
+# `nydusd-path` is the path to nydusd binary. If `nydusd` and `nydus-image` are installed, `--nydusd-path` and `--nydusimage-path`can be omitted.
 # Otherwise, provide them in below command line.
 # `address` is the domain socket that you configured in containerd configuration file
 # `config-path` is the path to Nydus configuration file
 # The default nydus-snapshotter work directory is located at `/var/lib/containerd-nydus`
 
 $ ./containerd-nydus-grpc \
-    --nydusd-config /etc/nydus/nydusd-config.json \
+    --config-path /etc/nydus/nydusd-config.json \
     --address /run/containerd-nydus/containerd-nydus-grpc.sock \
-    --nydusd /usr/local/bin/nydusd \
-    --nydus-image /usr/local/bin/nydus-image \
+    --nydusd-path /usr/local/bin/nydusd \
+    --nydusimg-path /usr/local/bin/nydus-image \
     --log-to-stdout
 ```
 

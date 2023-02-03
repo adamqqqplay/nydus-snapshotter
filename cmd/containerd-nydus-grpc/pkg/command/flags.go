@@ -16,8 +16,8 @@ const (
 	defaultAddress           = "/run/containerd-nydus/containerd-nydus-grpc.sock"
 	defaultLogLevel          = logrus.InfoLevel
 	defaultRootDir           = "/var/lib/containerd-nydus"
-	defaultDaemonMode string = "multiple"
-	defaultFsDriver   string = "fusedev"
+	DefaultDaemonMode string = "multiple"
+	FsDriverFusedev   string = "fusedev"
 )
 
 type Args struct {
@@ -30,6 +30,7 @@ type Args struct {
 	NydusImagePath        string
 	DaemonMode            string
 	FsDriver              string
+	MetricsAddress        string
 	LogToStdout           bool
 	PrintVersion          bool
 }
@@ -43,19 +44,20 @@ func buildFlags(args *Args) []cli.Flag {
 	return []cli.Flag{
 		&cli.BoolFlag{
 			Name:        "version",
+			Value:       false,
 			Usage:       "print version and build information",
 			Destination: &args.PrintVersion,
 		},
 		&cli.StringFlag{
 			Name:        "root",
 			Value:       defaultRootDir,
-			Usage:       "the directory storing snapshotter working states",
+			Usage:       "set `DIRECTORY` to store snapshotter working state",
 			Destination: &args.RootDir,
 		},
 		&cli.StringFlag{
 			Name:        "address",
 			Value:       defaultAddress,
-			Usage:       "gRPC socket path",
+			Usage:       "set `PATH` for gRPC socket",
 			Destination: &args.Address,
 		},
 		&cli.StringFlag{
@@ -71,35 +73,38 @@ func buildFlags(args *Args) []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:        "daemon-mode",
-			Value:       defaultDaemonMode,
-			Usage:       "spawning nydusd daemon mode, legal values include \"multiple\", \"shared\" or \"none\"",
+			Value:       DefaultDaemonMode,
+			Usage:       "set daemon working `MODE`, one of \"multiple\", \"shared\" or \"none\"",
 			Destination: &args.DaemonMode,
 		},
 		&cli.StringFlag{
 			Name:        "fs-driver",
-			Value:       defaultFsDriver,
-			Usage:       "fulfill image service based on what fs driver, possible values include \"fusedev\", \"fscache\"",
+			Value:       FsDriverFusedev,
+			Usage:       "backend `DRIVER` to serve the filesystem, one of \"fusedev\", \"fscache\"",
 			Destination: &args.FsDriver,
 		},
 		&cli.StringFlag{
 			Name:        "log-level",
 			Value:       defaultLogLevel.String(),
-			Usage:       "logging level, possible values \"trace\", \"debug\", \"info\", \"warn\", \"error\"",
+			Usage:       "set the logging `LEVEL` [trace, debug, info, warn, error, fatal, panic]",
 			Destination: &args.LogLevel,
 		},
 		&cli.BoolFlag{
 			Name:        "log-to-stdout",
-			Usage:       "print log messages to STDOUT",
+			Usage:       "log messages to standard out rather than files.",
 			Destination: &args.LogToStdout,
 		},
 		&cli.StringFlag{
 			Name:        "nydus-image",
-			Usage:       "`nydus-image` binary path, it will be searched from $PATH if this option is not provided",
+			Value:       "",
+			Usage:       "set `PATH` to the nydus-image binary, default to lookup nydus-image in $PATH",
 			Destination: &args.NydusImagePath,
 		},
 		&cli.StringFlag{
 			Name:        "nydusd",
-			Usage:       "`nydusd` binary path, it will be searched if this option is not provided",
+			Value:       "",
+			Aliases:     []string{"nydusd-path"},
+			Usage:       "set `PATH` to the nydusd binary, default to lookup nydusd in $PATH",
 			Destination: &args.NydusdPath,
 		},
 	}

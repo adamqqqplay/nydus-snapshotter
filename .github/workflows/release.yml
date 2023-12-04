@@ -104,6 +104,11 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Get the nydusd version
+        id: step_one
+        run: |
+          export NYDUS_VER=$(curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' -s "https://api.github.com/repos/dragonflyoss/image-service/releases/latest" | jq -r .tag_name | sed 's/^v//')
+          echo "NYDUS_VER=$NYDUS_VER" >> "$GITHUB_ENV"
       - name: build and push nydus-snapshotter image
         uses: docker/build-push-action@v3
         with:
@@ -112,3 +117,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: $NYDUS_VER

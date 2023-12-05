@@ -111,6 +111,11 @@ jobs:
           printf '%s\n' "$NYDUS_VER"
           echo "NYDUS_VER=$NYDUS_VER" >> "$GITHUB_ENV"
           printf '%s\n' "$NYDUS_VER"
+      - name: Use the value
+        id: step_two
+        run: |
+          printf '%s\n' "$NYDUS_VER"
+          printf '%s\n' ${{ env.NYDUS_VER }}
       - name: build and push nydus-snapshotter image
         uses: docker/build-push-action@v3
         with:
@@ -119,4 +124,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: $NYDUS_VER
+          build-args: ${{ env.NYDUS_VER }}

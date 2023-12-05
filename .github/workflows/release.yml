@@ -107,7 +107,7 @@ jobs:
       - name: Get the nydusd version
         id: step_one
         run: |
-          export NYDUS_VER=$(curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' -s "https://api.github.com/repos/dragonflyoss/image-service/releases/latest" | jq -r .tag_name | sed 's/^v//')
+          export NYDUS_VER=$(curl https://api.github.com/repos/dragonflyoss/nydus/releases/latest | jq -r .tag_name)
           printf '%s\n' "$NYDUS_VER"
           echo "NYDUS_VER=$NYDUS_VER" >> "$GITHUB_ENV"
           printf '%s\n' "$NYDUS_VER"
